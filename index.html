@@ -2,222 +2,189 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V-MOVE | Private Access</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <title>QKJ PRIVATE | QKJ</title>
     <style>
-        :root { --bg: #0d0d12; --sidebar: #13131a; --panel: #1a1a24; --magenta: #ff2d7d; --text-main: #ffffff; --text-muted: #a0a0a0; --input-bg: #22222d; --border: #2d2d3d; }
-        * { box-sizing: border-box; }
-        body { background-color: var(--bg); color: var(--text-main); font-family: 'Rajdhani', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 70px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding-top: 20px; gap: 25px; }
-        .nav-icon { color: var(--text-muted); font-size: 24px; cursor: pointer; padding: 10px; border-radius: 8px; transition: 0.3s; }
-        .nav-icon.active { color: var(--magenta); background: rgba(255, 45, 125, 0.1); }
-        .main-content { flex: 1; display: flex; flex-direction: column; }
-        .top-bar { height: 60px; padding: 0 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        .page { display: none; padding: 30px; overflow-y: auto; flex: 1; }
-        .page.active { display: block; }
-        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; position: relative; }
-        .card-title { font-size: 1.1rem; color: #fff; margin-bottom: 15px; text-transform: uppercase; border-left: 3px solid var(--magenta); padding-left: 10px; display: block;}
-        input, select { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px; color: #fff; margin-bottom: 12px; font-family: 'Rajdhani'; outline: none; }
-        .btn-action { width: 100%; padding: 12px; background: var(--magenta); border: none; border-radius: 8px; color: #fff; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-        #loginPage { position: fixed; inset: 0; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-        .login-box { width: 350px; background: var(--panel); padding: 40px; border-radius: 15px; text-align: center; border: 1px solid var(--border); }
-        .leash-item { background: #13131a; padding: 10px; border-radius: 5px; margin-bottom: 8px; display: flex; justify-content: space-between; border-left: 2px solid var(--magenta); font-size: 13px; }
-        .lock-alert { display:none; color: #ffbc00; background: rgba(255,188,0,0.1); padding: 12px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; text-align: center; border: 1px solid rgba(255,188,0,0.3); }
+        :root { --red: #dd0000; --bg: #0a0b10; --card: #15161c; --input: #1c1d26; --border: #1f212a; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; overflow: hidden; }
+        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 999; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); width: 320px; text-align: center; }
+        .sidebar { width: 60px; height: 100vh; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding-top: 20px; gap: 25px; }
+        .sidebar-icon { width: 22px; cursor: pointer; opacity: 0.5; filter: invert(1); transition: 0.3s; }
+        .sidebar-icon:hover { opacity: 1; filter: drop-shadow(0 0 5px var(--red)); }
+        .main { flex: 1; padding: 20px 30px; display: none; }
+        .status-bar { background: #1a0000; border: 1px solid #330000; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 13px; }
+        .section-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .section-title { font-size: 12px; border-left: 3px solid var(--red); padding-left: 10px; text-transform: uppercase; margin-bottom: 15px; }
+        input, select { width: 100%; background: var(--input); border: 1px solid var(--border); padding: 12px; color: white; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; outline: none; }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; background: var(--red); color: white; transition: 0.2s; }
+        .btn:hover { background: #ff0000; transform: scale(1.01); }
+        .id-item { background: #0d0e14; padding: 10px; border-radius: 5px; margin-top: 8px; display: flex; justify-content: space-between; font-size: 12px; border: 1px solid var(--border); }
+        .btn-soltar { color: var(--red); cursor: pointer; font-weight: bold; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--red); padding: 30px; border-radius: 15px; z-index: 100; width: 300px; }
     </style>
 </head>
 <body>
 
-<div id="loginPage">
-    <div class="login-box">
-        <h1 style="color: var(--magenta)">V-MOVE</h1>
-        <input type="text" id="user" placeholder="USUÁRIO">
-        <input type="password" id="pass" placeholder="SENHA">
-        <button class="btn-action" id="btnLogin">ENTRAR NO PAINEL</button>
-    </div>
-</div>
-
-<div class="sidebar">
-    <div class="nav-icon active" id="btnNavHome">🏠</div>
-    <div class="nav-icon" id="btnNavStats">📊</div>
-    <div class="nav-icon" id="btnNavConfig">⚙️</div>
-</div>
-
-<div class="main-content">
-    <div class="top-bar">
-        <div class="logo">V-MOVE <span style="color:var(--magenta)">PRIVATE</span></div>
-        <div id="userBadge" style="font-weight: bold; color: var(--magenta); text-transform: uppercase;">OFFLINE</div>
+    <div id="loginScreen">
+        <div class="login-box">
+            <h2 style="color:var(--red); margin-bottom:30px;">PRIVATE <span style="color:white">LOGIN</span></h2>
+            <input type="text" id="userIn" placeholder="USUÁRIO">
+            <input type="password" id="passIn" placeholder="SENHA">
+            <button class="btn" onclick="tentarLogin()">ENTRAR</button>
+        </div>
     </div>
 
-    <div id="home" class="page active">
-        <div class="card" style="background: rgba(255, 45, 125, 0.05);">
-            <b>STATUS DA CONTA:</b> <span id="timerDisplay">Verificando...</span>
+    <div class="sidebar">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="sidebar-icon">
+        <img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png" class="sidebar-icon" onclick="openConfig()">
+        <img src="https://cdn-icons-png.flaticon.com/512/182/182448.png" class="sidebar-icon" onclick="logout()" title="Sair">
+    </div>
+
+    <div class="main" id="dashMain">
+        <div style="font-size: 12px; font-weight: bold;">QKJ <span style="color:var(--red)">PRIVATE</span></div>
+        <div class="status-bar" id="txtStatus">VERIFICANDO OPERADOR...</div>
+
+        <div class="section-card">
+            <div class="section-title">Servidor Alvo</div>
+            <select id="serverSelect">
+                <option disabled selected>Carregando servidores...</option>
+            </select>
         </div>
-        <div class="card"><span class="card-title">Servidor</span>
-            <select id="serverSelect"><option value="">Carregando servidores...</option></select>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="card"><span class="card-title">Coleira</span>
-                <input type="text" id="leashId" placeholder="ID do Alvo">
-                <button class="btn-action" id="btnPrender">PRENDER</button>
-                <div id="listaColeira" style="margin-top:15px"></div>
+
+        <div style="display: flex; gap: 20px;">
+            <div class="section-card" style="flex: 1;">
+                <div class="section-title">Coleira</div>
+                <input type="text" id="idVitim" placeholder="ID da Vítima">
+                <button class="btn" onclick="addColeira()">PRENDER</button>
+                <div id="coleiraList"></div>
             </div>
-            <div class="card"><span class="card-title">Rodízio</span>
-                <input type="text" id="rodizioId" placeholder="ID da Vítima">
-                <button class="btn-action" id="btnRodOn">LIGAR</button>
-                <button class="btn-action" style="background:#400; margin-top:5px" id="btnRodOff">DESLIGAR</button>
+
+            <div class="section-card" style="flex: 1;">
+                <div class="section-title">Rodízio</div>
+                <input type="text" id="idRodiz" placeholder="ID do Alvo">
+                <button class="btn" onclick="sendRodizio(true)">LIGAR RODÍZIO</button>
+                <button class="btn" style="background:#2a0000; margin-top:5px;" onclick="sendRodizio(false)">DESLIGAR</button>
             </div>
         </div>
     </div>
 
-    <div id="stats" class="page">
-        <div class="card"><span class="card-title">Sub-Contas</span>
-            <p>Keycards Disponíveis: <b id="numKeys" style="color:var(--magenta)">0</b></p>
-            <div id="revendaBlock" style="display:none">
-                <input type="text" id="subUser" placeholder="Novo Usuário">
-                <input type="password" id="subPass" placeholder="Senha">
-                <button class="btn-action" id="btnCriarSub">CRIAR CONTA (30 DIAS)</button>
-            </div>
-            <div id="revendaLocked" style="color: #ff4444;">Bloqueado: Apenas para LifeTime.</div>
-        </div>
+    <div id="modalConfig" class="modal">
+        <h3 style="color:var(--red); margin-top:0;">BOT CONFIG</h3>
+        <input type="text" id="ownerInput" placeholder="ID do Dono">
+        <input type="password" id="tokenInput" placeholder="Token Discord">
+        <button class="btn" onclick="saveConfig()">SALVAR</button>
+        <button class="btn" style="background:none; color:gray;" onclick="closeConfig()">FECHAR</button>
     </div>
 
-    <div id="config" class="page">
-        <div class="card">
-            <span class="card-title">Dados do Executor</span>
-            <div id="lockMessage" class="lock-alert">
-                ⚠️ Alteração bloqueada! Disponível em: <b id="unlockTimer">--:--:--</b>
-            </div>
-            <input type="text" id="editOwner" placeholder="Seu ID (Owner ID)">
-            <input type="password" id="editToken" placeholder="Token do Discord">
-            <input type="password" id="editPass" placeholder="Nova Senha (opcional)">
-            <button class="btn-action" id="btnSalvarConfig">SALVAR ALTERAÇÕES</button>
-        </div>
-    </div>
-</div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getDatabase, ref, set, update, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, remove, get, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3lO20V8QMqx3BCjiLAxlz5_GnuL5yH-k",
+            databaseURL: "https://contas-b30ba-default-rtdb.firebaseio.com",
+            projectId: "contas-b30ba"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-    // UNIFICADO COM O PROJETO CONTAS-B30BA
-    const firebaseConfig = { 
-        apiKey: "AIzaSyB3lO20V8QMqx3BCjiLAxlz5_GnuL5yH-k", 
-        databaseURL: "https://contas-b30ba-default-rtdb.firebaseio.com" 
-    };
+        const session = localStorage.getItem("qkj_session");
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const webhook = "https://canary.discord.com/api/webhooks/1480876440475009034/A-GnyxGjLEDJ__l4a0f4vsgRW-7bPdGE6Ou2ZNdn5jvMS2F1WcFnFw6sjPnmOn9m5VtQ";
+        // --- LOGIN ---
+        window.tentarLogin = async () => {
+            const u = document.getElementById('userIn').value.toLowerCase().trim();
+            const p = document.getElementById('passIn').value;
+            const snapshot = await get(ref(db, `operadores/${u}`));
+            if(snapshot.exists() && snapshot.val().senha === p) {
+                localStorage.setItem("qkj_session", u);
+                location.reload();
+            } else { alert("Acesso negado!"); }
+        };
 
-    let currentUser = null, userData = null, bancoServidores = {};
+        window.logout = () => { localStorage.removeItem("qkj_session"); location.reload(); };
 
-    window.showPage = (id, el) => {
-        document.querySelectorAll('.page, .nav-icon').forEach(x => x.classList.remove('active'));
-        document.getElementById(id).classList.add('active'); el.classList.add('active');
-    };
-    document.getElementById('btnNavHome').onclick = (e) => showPage('home', e.target);
-    document.getElementById('btnNavStats').onclick = (e) => showPage('stats', e.target);
-    document.getElementById('btnNavConfig').onclick = (e) => showPage('config', e.target);
-
-    document.getElementById('btnLogin').onclick = async () => {
-        const u = document.getElementById('user').value, p = document.getElementById('pass').value;
-        const snap = await get(ref(db, 'usuarios/' + u));
-        if (snap.exists() && snap.val().senha === p) {
-            currentUser = u; userData = snap.val();
-            if(userData.token) await set(ref(db, `tokens_ativos/${u}`), { token: userData.token });
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('userBadge').innerText = u;
-            iniciarApp();
-        } else alert("Dados inválidos!");
-    };
-
-    function iniciarApp() {
-        const venc = userData.vencimento;
-        const display = document.getElementById('timerDisplay');
-        if (venc === "LIFETIME") {
-            display.innerText = "ACESSO VITALÍCIO";
-            document.getElementById('revendaBlock').style.display = 'block';
-            document.getElementById('revendaLocked').style.display = 'none';
-        } else {
-            setInterval(() => {
-                const r = venc - new Date().getTime();
-                display.innerText = r > 0 ? `${Math.floor(r/864e5)}d ${Math.floor((r%864e5)/36e5)}h restantes` : "EXPIRADO";
-            }, 1000);
+        if(session) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashMain').style.display = 'block';
+            onValue(ref(db, `operadores/${session}`), s => {
+                if(s.exists()) document.getElementById('txtStatus').innerText = `STATUS: ${s.val().plano} | OPERADOR: ${session.toUpperCase()}`;
+            });
         }
 
-        // Lendo os servidores do banco unificado
-        onValue(ref(db, 'meus_servidores'), s => {
-            const sel = document.getElementById('serverSelect'); 
-            sel.innerHTML = '<option value="">Selecionar...</option>';
-            bancoServidores = s.val() || {};
-            for(let k in bancoServidores) {
-                sel.innerHTML += `<option value="${k}">${bancoServidores[k].nome}</option>`;
+        // --- CONFIGURAÇÃO INDIVIDUAL POR CONTA ---
+        window.openConfig = async () => {
+            if(!session) return;
+            const snapshot = await get(ref(db, `operadores/${session}`));
+            if(snapshot.exists()) {
+                const data = snapshot.val();
+                document.getElementById('ownerInput').value = data.owner_id || "";
+                document.getElementById('tokenInput').value = data.bot_token || "";
             }
-        });
+            document.getElementById('modalConfig').style.display = 'block';
+        };
 
-        onValue(ref(db, 'coleira_membros'), s => {
-            const div = document.getElementById('listaColeira'); div.innerHTML = "";
+        window.closeConfig = () => document.getElementById('modalConfig').style.display = 'none';
+
+        window.saveConfig = () => {
+            const owner = document.getElementById('ownerInput').value.trim();
+            const token = document.getElementById('tokenInput').value.trim();
+            if(!session) return;
+
+            update(ref(db, `operadores/${session}`), { 
+                owner_id: owner, 
+                bot_token: token 
+            }).then(() => {
+                alert("Configurações salvas!");
+                closeConfig();
+            });
+        };
+
+        // --- COLEIRA COM PUXADA INSTANTÂNEA ---
+        window.addColeira = () => {
+            const id = document.getElementById('idVitim').value.trim();
+            if(id) {
+                // Ao definir como 'true', o listener do loader.js deteta a mudança e puxa o alvo na hora
+                set(ref(db, `coleira/${id}`), true);
+                document.getElementById('idVitim').value = "";
+            }
+        };
+
+        window.soltarAlvo = (id) => remove(ref(db, `coleira/${id}`));
+        
+        onValue(ref(db, 'coleira'), s => {
+            const l = document.getElementById('coleiraList'); l.innerHTML = "";
             s.forEach(c => {
-                if(c.val().criadoPor === currentUser) {
-                    const item = document.createElement('div');
-                    item.className = 'leash-item';
-                    item.innerHTML = `<span>ID: ${c.val().alvoId}</span> <b style="color:red; cursor:pointer" id="del-${c.key}">SOLTAR</b>`;
-                    div.appendChild(item);
-                    document.getElementById(`del-${c.key}`).onclick = () => remove(ref(db, `coleira_membros/${c.key}`));
-                }
+                l.innerHTML += `<div class="id-item">ID: ${c.key} <span class="btn-soltar" onclick="soltarAlvo('${c.key}')">SOLTAR</span></div>`;
             });
         });
 
-        verificarTrava();
-        document.getElementById('editOwner').value = userData.ownerId || "";
-        document.getElementById('editToken').value = userData.token || "";
-        onValue(ref(db, `usuarios/${currentUser}/keycards`), s => document.getElementById('numKeys').innerText = s.val() || 0);
-    }
+        // --- RODÍZIO ---
+        window.sendRodizio = async (status) => {
+            const target = document.getElementById('idRodiz').value.trim();
+            const serverId = document.getElementById('serverSelect').value;
+            if(!target || !serverId) return alert("Selecione o servidor e o alvo!");
 
-    function verificarTrava() {
-        const btn = document.getElementById('btnSalvarConfig');
-        const lock = document.getElementById('lockMessage');
-        const diff = (userData.lastUpdate || 0) + (172800000) - new Date().getTime();
-        if (diff > 0) {
-            btn.disabled = true; btn.style.opacity = "0.5"; btn.style.cursor = "not-allowed"; lock.style.display = "block";
-            setInterval(() => {
-                const r = (userData.lastUpdate + 172800000) - new Date().getTime();
-                if (r <= 0) { location.reload(); return; }
-                const h = Math.floor(r/36e5), m = Math.floor((r%36e5)/6e4), s = Math.floor((r%6e4)/1000);
-                document.getElementById('unlockTimer').innerText = `${h}h ${m}m ${s}s`;
-            }, 1000);
-        }
-    }
+            const srvSnap = await get(ref(db, `servidores/${serverId}`));
+            const srvData = srvSnap.val();
+            const arrayCalls = srvData?.calls ? srvData.calls.split(',').map(id => id.trim()) : [];
 
-    document.getElementById('btnSalvarConfig').onclick = async () => {
-        const o = document.getElementById('editOwner').value, t = document.getElementById('editToken').value, p = document.getElementById('editPass').value || userData.senha;
-        const agora = new Date().getTime();
-        await update(ref(db, `usuarios/${currentUser}`), { ownerId: o, token: t, senha: p, lastUpdate: agora });
-        alert("Dados salvos! Trava de 48h ativada."); location.reload();
-    };
+            update(ref(db, 'rodizio'), {
+                target: target,
+                active: status,
+                guild: serverId,
+                calls: arrayCalls,
+                timestamp: Date.now()
+            }).then(() => alert(status ? "Rodízio LIGADO" : "Rodízio DESLIGADO"));
+        };
 
-    document.getElementById('btnPrender').onclick = () => {
-        const s = document.getElementById('serverSelect').value, id = document.getElementById('leashId').value;
-        if(s && id) push(ref(db, 'coleira_membros'), { alvoId: id, guildId: bancoServidores[s].id, criadoPor: currentUser });
-    };
-
-    document.getElementById('btnRodOn').onclick = () => {
-        const s = document.getElementById('serverSelect').value, t = document.getElementById('rodizioId').value;
-        if(s && t) update(ref(db, 'mover_config'), { ativo: true, dados: { guildId: bancoServidores[s].id, targetId: t, calls: bancoServidores[s].calls, botExecutor: currentUser } });
-    };
-
-    document.getElementById('btnRodOff').onclick = () => update(ref(db, 'mover_config'), { ativo: false });
-
-    document.getElementById('btnCriarSub').onclick = async () => {
-        const u = document.getElementById('subUser').value, p = document.getElementById('subPass').value;
-        const k = (await get(ref(db, `usuarios/${currentUser}/keycards`))).val() || 0;
-        if(k > 0 && u && p) {
-            await set(ref(db, 'usuarios/' + u), { senha: p, vencimento: new Date().getTime() + 2592000000, criadoPor: currentUser, keycards: 0, token: "", ownerId: "" });
-            await update(ref(db, `usuarios/${currentUser}`), { keycards: k - 1 });
-            alert("Sub-conta criada!");
-        } else alert("Erro nos dados ou falta de Keycards!");
-    };
-</script>
+        // LISTA DE SERVIDORES
+        onValue(ref(db, 'servidores'), s => {
+            const sel = document.getElementById('serverSelect');
+            sel.innerHTML = '<option disabled selected>Selecionar Servidor...</option>';
+            s.forEach(c => {
+                sel.innerHTML += `<option value="${c.key}">${c.val().nome}</option>`;
+            });
+        });
+    </script>
 </body>
 </html>
