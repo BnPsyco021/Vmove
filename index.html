@@ -2,189 +2,111 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>QKJ PRIVATE | QKJ</title>
+    <title>Para a Eduarda ❤️</title>
     <style>
-        :root { --red: #dd0000; --bg: #0a0b10; --card: #15161c; --input: #1c1d26; --border: #1f212a; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; overflow: hidden; }
-        #loginScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 999; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: var(--card); padding: 40px; border-radius: 12px; border: 1px solid var(--border); width: 320px; text-align: center; }
-        .sidebar { width: 60px; height: 100vh; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding-top: 20px; gap: 25px; }
-        .sidebar-icon { width: 22px; cursor: pointer; opacity: 0.5; filter: invert(1); transition: 0.3s; }
-        .sidebar-icon:hover { opacity: 1; filter: drop-shadow(0 0 5px var(--red)); }
-        .main { flex: 1; padding: 20px 30px; display: none; }
-        .status-bar { background: #1a0000; border: 1px solid #330000; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 13px; }
-        .section-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; }
-        .section-title { font-size: 12px; border-left: 3px solid var(--red); padding-left: 10px; text-transform: uppercase; margin-bottom: 15px; }
-        input, select { width: 100%; background: var(--input); border: 1px solid var(--border); padding: 12px; color: white; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; outline: none; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; background: var(--red); color: white; transition: 0.2s; }
-        .btn:hover { background: #ff0000; transform: scale(1.01); }
-        .id-item { background: #0d0e14; padding: 10px; border-radius: 5px; margin-top: 8px; display: flex; justify-content: space-between; font-size: 12px; border: 1px solid var(--border); }
-        .btn-soltar { color: var(--red); cursor: pointer; font-weight: bold; }
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--red); padding: 30px; border-radius: 15px; z-index: 100; width: 300px; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap');
+        
+        body { 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-family: 'Poppins', sans-serif; 
+            /* Imagem de fundo com filtro escuro para o texto se destacar */
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                        url('https://imgur.com/CSbsJgo.png'); 
+            background-size: cover; 
+            background-position: center;
+            background-repeat: no-repeat;
+            text-align: center; 
+            color: white; 
+        }
+
+        .card { 
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(15px); 
+            padding: 3rem; 
+            border-radius: 30px; 
+            width: 90%; 
+            max-width: 400px; 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+        }
+
+        button { 
+            padding: 12px 25px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            margin: 10px; 
+        }
+
+        #btnNormal { background: #fff; color: #a18cd1; }
+        #btnSim { background: #fff; color: #ff4757; }
+        #btnNao { background: #ff4757; color: #fff; }
+        .btn-container { display: flex; justify-content: center; gap: 20px; margin-top: 20px; transition: 0.5s; }
+        button:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
 
-    <div id="loginScreen">
-        <div class="login-box">
-            <h2 style="color:var(--red); margin-bottom:30px;">PRIVATE <span style="color:white">LOGIN</span></h2>
-            <input type="text" id="userIn" placeholder="USUÁRIO">
-            <input type="password" id="passIn" placeholder="SENHA">
-            <button class="btn" onclick="tentarLogin()">ENTRAR</button>
-        </div>
-    </div>
-
-    <div class="sidebar">
-        <img src="https://cdn-icons-png.flaticon.com/512/25/25694.png" class="sidebar-icon">
-        <img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png" class="sidebar-icon" onclick="openConfig()">
-        <img src="https://cdn-icons-png.flaticon.com/512/182/182448.png" class="sidebar-icon" onclick="logout()" title="Sair">
-    </div>
-
-    <div class="main" id="dashMain">
-        <div style="font-size: 12px; font-weight: bold;">QKJ <span style="color:var(--red)">PRIVATE</span></div>
-        <div class="status-bar" id="txtStatus">VERIFICANDO OPERADOR...</div>
-
-        <div class="section-card">
-            <div class="section-title">Servidor Alvo</div>
-            <select id="serverSelect">
-                <option disabled selected>Carregando servidores...</option>
-            </select>
+    <div class="card" id="card">
+        <div id="intro">
+            <h1>Eduarda, minha cacheadinha...</h1>
+            <p>Queria saber se posso fazer uma perguntinha especial pra você?</p>
+            <button id="btnNormal" onclick="irParaPedido()">Pode sim! ❤️</button>
         </div>
 
-        <div style="display: flex; gap: 20px;">
-            <div class="section-card" style="flex: 1;">
-                <div class="section-title">Coleira</div>
-                <input type="text" id="idVitim" placeholder="ID da Vítima">
-                <button class="btn" onclick="addColeira()">PRENDER</button>
-                <div id="coleiraList"></div>
-            </div>
-
-            <div class="section-card" style="flex: 1;">
-                <div class="section-title">Rodízio</div>
-                <input type="text" id="idRodiz" placeholder="ID do Alvo">
-                <button class="btn" onclick="sendRodizio(true)">LIGAR RODÍZIO</button>
-                <button class="btn" style="background:#2a0000; margin-top:5px;" onclick="sendRodizio(false)">DESLIGAR</button>
+        <div id="pedido" style="display:none;">
+            <h1>Quer namorar comigo?</h1>
+            <div class="btn-container" id="container">
+                <button id="btnSim" onclick="confirmar()">Sim, aceito! ❤️</button>
+                <button id="btnNao" onmouseover="trocarPosicao()">Não</button>
             </div>
         </div>
-    </div>
-
-    <div id="modalConfig" class="modal">
-        <h3 style="color:var(--red); margin-top:0;">BOT CONFIG</h3>
-        <input type="text" id="ownerInput" placeholder="ID do Dono">
-        <input type="password" id="tokenInput" placeholder="Token Discord">
-        <button class="btn" onclick="saveConfig()">SALVAR</button>
-        <button class="btn" style="background:none; color:gray;" onclick="closeConfig()">FECHAR</button>
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getDatabase, ref, set, update, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyB3lO20V8QMqx3BCjiLAxlz5_GnuL5yH-k",
-            databaseURL: "https://contas-b30ba-default-rtdb.firebaseio.com",
-            projectId: "contas-b30ba"
+            apiKey: "AIzaSyAJrN-q8xptgkvfSssIIONOxVhgSNn86Gk",
+            authDomain: "fugitivos-clt.firebaseapp.com",
+            databaseURL: "https://fugitivos-clt-default-rtdb.firebaseio.com",
+            projectId: "fugitivos-clt",
+            storageBucket: "fugitivos-clt.firebasestorage.app",
+            messagingSenderId: "974025214475",
+            appId: "1:974025214475:web:8b788792d932a7146b550e",
+            measurementId: "G-7519PZRJ49"
         };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        const session = localStorage.getItem("qkj_session");
-
-        // --- LOGIN ---
-        window.tentarLogin = async () => {
-            const u = document.getElementById('userIn').value.toLowerCase().trim();
-            const p = document.getElementById('passIn').value;
-            const snapshot = await get(ref(db, `operadores/${u}`));
-            if(snapshot.exists() && snapshot.val().senha === p) {
-                localStorage.setItem("qkj_session", u);
-                location.reload();
-            } else { alert("Acesso negado!"); }
+        window.irParaPedido = () => { 
+            document.getElementById('intro').style.display = 'none'; 
+            document.getElementById('pedido').style.display = 'block'; 
         };
-
-        window.logout = () => { localStorage.removeItem("qkj_session"); location.reload(); };
-
-        if(session) {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('dashMain').style.display = 'block';
-            onValue(ref(db, `operadores/${session}`), s => {
-                if(s.exists()) document.getElementById('txtStatus').innerText = `STATUS: ${s.val().plano} | OPERADOR: ${session.toUpperCase()}`;
-            });
-        }
-
-        // --- CONFIGURAÇÃO INDIVIDUAL POR CONTA ---
-        window.openConfig = async () => {
-            if(!session) return;
-            const snapshot = await get(ref(db, `operadores/${session}`));
-            if(snapshot.exists()) {
-                const data = snapshot.val();
-                document.getElementById('ownerInput').value = data.owner_id || "";
-                document.getElementById('tokenInput').value = data.bot_token || "";
-            }
-            document.getElementById('modalConfig').style.display = 'block';
-        };
-
-        window.closeConfig = () => document.getElementById('modalConfig').style.display = 'none';
-
-        window.saveConfig = () => {
-            const owner = document.getElementById('ownerInput').value.trim();
-            const token = document.getElementById('tokenInput').value.trim();
-            if(!session) return;
-
-            update(ref(db, `operadores/${session}`), { 
-                owner_id: owner, 
-                bot_token: token 
-            }).then(() => {
-                alert("Configurações salvas!");
-                closeConfig();
-            });
-        };
-
-        // --- COLEIRA COM PUXADA INSTANTÂNEA ---
-        window.addColeira = () => {
-            const id = document.getElementById('idVitim').value.trim();
-            if(id) {
-                // Ao definir como 'true', o listener do loader.js deteta a mudança e puxa o alvo na hora
-                set(ref(db, `coleira/${id}`), true);
-                document.getElementById('idVitim').value = "";
-            }
-        };
-
-        window.soltarAlvo = (id) => remove(ref(db, `coleira/${id}`));
         
-        onValue(ref(db, 'coleira'), s => {
-            const l = document.getElementById('coleiraList'); l.innerHTML = "";
-            s.forEach(c => {
-                l.innerHTML += `<div class="id-item">ID: ${c.key} <span class="btn-soltar" onclick="soltarAlvo('${c.key}')">SOLTAR</span></div>`;
-            });
-        });
-
-        // --- RODÍZIO ---
-        window.sendRodizio = async (status) => {
-            const target = document.getElementById('idRodiz').value.trim();
-            const serverId = document.getElementById('serverSelect').value;
-            if(!target || !serverId) return alert("Selecione o servidor e o alvo!");
-
-            const srvSnap = await get(ref(db, `servidores/${serverId}`));
-            const srvData = srvSnap.val();
-            const arrayCalls = srvData?.calls ? srvData.calls.split(',').map(id => id.trim()) : [];
-
-            update(ref(db, 'rodizio'), {
-                target: target,
-                active: status,
-                guild: serverId,
-                calls: arrayCalls,
-                timestamp: Date.now()
-            }).then(() => alert(status ? "Rodízio LIGADO" : "Rodízio DESLIGADO"));
+        window.trocarPosicao = () => { 
+            const c = document.getElementById('container'); 
+            c.style.flexDirection = c.style.flexDirection === 'row-reverse' ? 'row' : 'row-reverse'; 
         };
-
-        // LISTA DE SERVIDORES
-        onValue(ref(db, 'servidores'), s => {
-            const sel = document.getElementById('serverSelect');
-            sel.innerHTML = '<option disabled selected>Selecionar Servidor...</option>';
-            s.forEach(c => {
-                sel.innerHTML += `<option value="${c.key}">${c.val().nome}</option>`;
+        
+        window.confirmar = () => {
+            const dados = {
+                nome: "Eduarda",
+                status: "ACEITO",
+                timestamp: new Date().toISOString()
+            };
+            
+            set(ref(db, 'namoro_certificado'), dados).then(() => {
+                document.getElementById('card').innerHTML = "<h1>Eu sabia! ❤️</h1><p>Prometo fazer de tudo pra dar certo, vc não vai se arrepender. I love You Baby💍!</p>";
             });
-        });
+        };
     </script>
 </body>
 </html>
